@@ -226,31 +226,20 @@ elif page == "Make Prediction":
                     
             except Exception as e:
                 st.error(f"❌ Error making prediction: {str(e)}")
-# streamlit_app.py
-
-!pip install streamlit pandas gspread gspread-dataframe
-
 import streamlit as st
-import pandas as pd
 import gspread
-from gspread_dataframe import get_as_dataframe
+from oauth2client.service_account import ServiceAccountCredentials
 
-# Authenticate and connect to Google Sheets (if you're using OAuth)
-# gc = gspread.service_account(filename='path_to_your_credentials.json')
+# Define the scope and credentials file
+scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+creds = ServiceAccountCredentials.from_json_keyfile_name("C:\Users\moyoa\AppData\Roaming\gspread\client_secret_336317186170-li0g5emp6qsbg1k2afd3oqoa906n6lrb.apps.googleusercontent.com.json", scope)
 
-gc = gspread.authorize(credentials=None)  # This would use an unauthenticated public access to the sheet
+# Authorize and open the Google Sheet
+client = gspread.authorize(creds)
+sheet = client.open("IFSSA_cleaned_dataset").sheet1
 
-# Alternatively, for a public sheet, you can use the URL or sheet key directly:
-sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSXUCJRkYyqkfNFbyjRkB5NyP4pL4Khh00bmHegBZOpFf9BparWuCsxx7-C7m-Uy6DNBn7fSBs21NKi/pubhtml"
+# Fetch all records from the sheet
+data = sheet.get_all_records()
 
-# Open the sheet using the URL or the sheet ID
-worksheet = gc.open_by_url(sheet_url).sheet1
-
-# Get the data as a pandas DataFrame
-df = get_as_dataframe(worksheet)
-
-# Display data in Streamlit
-st.write("Google Sheet Data:", df)
-
-
-streamlit run app.py
+# Display the data in Streamlit
+st.write(data)
