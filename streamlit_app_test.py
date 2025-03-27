@@ -1,21 +1,37 @@
 import streamlit as st
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
+import gspread
+from google.oauth2.service_account import Credentials
 
-# For public sheet (no authentication needed)
-def get_public_sheet_data(sheet_id, sheet_name):
-    url = f'https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}'
-    df = pd.read_csv(url)
-    return df
+# --- Google Sheets Connection ---
+@st.cache_resource
+def connect_to_gsheet():
+    # Authenticate with Google Sheets
+    scope = ["https://www.googleapis.com/auth/spreadsheets"]
+    creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope)
+    return gspread.authorize(creds)
 
-# Your sheet details
-SHEET_ID = '1sBwwxi_LRKmzdJxz68W3fSClJVdwmTJ2UUJXylIgTbo'  # Replace with your sheet ID
-SHEET_NAME = 'Streamlit_Goolesheet'  # Replace with your sheet name
+def get_sheet_data(sheet_id, sheet_name):
+    gc = connect_to_gsheet()
+    worksheet = gc.open_by_key(sheet_id).worksheet(sheet_name)
+    return worksheet.get_all_records()
+
+# --- Streamlit App ---
+st.title("Google Sheets Data Viewer")
 
 # Load data
-df = get_public_sheet_data(SHEET_ID, SHEET_NAME)
+SHEET_ID = "1sBwwxi_LRKmzdJxz68W3fSClJVdwmTJ2UUJXylIgTbo"  # From URL: docs.google.com/spreadsheets/d/[THIS_IS_YOUR_SHEET_ID]/edit
+SHEET_NAME = "Streamlit_Goolesheet"
 
-# Display in Streamlit
-st.title("Google Sheet Data in Streamlit")
-st.write(df)
+df = pd.DataFrame(get_sheet_data(SHEET_ID, SHEET_NAME))
+st.dataframe(df)
+
+# Add new data example
+with st.form("Add row"):
+    name = st.text_input("Name")
+    email = st.text_input("Email")
+    if st.form_submit_button("Submit"):
+        gc = connect_to_gsheet()
+        worksheet = gc.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
+        worksheet.append_row([name, email])
+        st.success("Data added!")
