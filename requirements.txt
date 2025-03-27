@@ -10,4 +10,7 @@ xgboost
 lightgbm
 tensorflow
 torch
-streamlit_gsheets
+streamlit-gsheets
+pygments
+markdown-it-py
+rich
