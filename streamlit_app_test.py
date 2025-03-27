@@ -226,7 +226,6 @@ elif page == "Make Prediction":
                     
             except Exception as e:
                 st.error(f"❌ Error making prediction: {str(e)}")
-
 # streamlit_app.py
 
 import streamlit as st
