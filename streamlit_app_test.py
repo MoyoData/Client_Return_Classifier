@@ -229,7 +229,7 @@ elif page == "Make Prediction":
 # streamlit_app.py
 
 import streamlit as st
-from streamlit-gsheets import GSheetsConnection
+from streamlit_gsheets import GSheetsConnection
 
 
 # Create a connection object.
