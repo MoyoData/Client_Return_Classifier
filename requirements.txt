@@ -10,3 +10,4 @@ xgboost
 lightgbm
 tensorflow
 torch
+streamlit-gsheets
