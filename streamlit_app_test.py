@@ -229,8 +229,6 @@ elif page == "Make Prediction":
 
 # streamlit_app.py
 
-!pip install streamlit-gsheets
-
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 
