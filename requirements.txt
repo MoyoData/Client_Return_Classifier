@@ -14,3 +14,5 @@ streamlit-gsheets
 pygments
 markdown-it-py
 rich
+gspread
+google-auth
