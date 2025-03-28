@@ -1,8 +1,2 @@
-# Secrets
-.streamlit/secrets.toml
 *.json
-__pycache__/
-
-# System files (optional but recommended)
-.DS_Store
-.env
+.streamlit/secrets.toml
